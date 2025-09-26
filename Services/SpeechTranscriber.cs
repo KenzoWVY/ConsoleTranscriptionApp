@@ -1,5 +1,6 @@
 ﻿using Microsoft.CognitiveServices.Speech;
 using Microsoft.CognitiveServices.Speech.Audio;
+using System.Threading.Tasks;
 
 namespace ConsoleTranscriptionApp.Services;
 
@@ -9,7 +10,7 @@ public class SpeechTranscriber : IDisposable
 
     private SpeechRecognizer recognizer;
 
-    public bool sessionEnded = false;
+    private bool _sessionEnded = false;
 
     public SpeechTranscriber(string language, string azureKey, string azureRegion)
     {
@@ -17,13 +18,12 @@ public class SpeechTranscriber : IDisposable
 
         SpeechConfig speechConfigs = SpeechConfig.FromSubscription(azureKey, azureRegion);
         speechConfigs.SpeechRecognitionLanguage = language;
-        speechConfigs.SetProperty(PropertyId.Speech_SegmentationSilenceTimeoutMs, "10000");
         speechConfigs.EnableDictation();
 
 
         recognizer = new SpeechRecognizer(speechConfigs, AudioConfig.FromStreamInput(pushStream));
 
-        // Events
+        // Event subscriptions
 
         // Event: Print real-time transcription
         recognizer.Recognizing += (s, e) =>
@@ -31,7 +31,7 @@ public class SpeechTranscriber : IDisposable
             Console.WriteLine($"{e.Result.Text}");
         };
 
-        // Event: Print text after phrase is fully recognized
+        // Event: Print phrase after fully recognized
         recognizer.Recognized += (s, e) =>
         {
             if (e.Result.Reason == ResultReason.RecognizedSpeech)
@@ -51,24 +51,32 @@ public class SpeechTranscriber : IDisposable
                 Console.WriteLine($"Error Details: {e.ErrorDetails}");
                 Console.WriteLine("\n> Check Azure Speech Key and Region in the config.json file. Press [ENTER] to quit");
             }
+            Console.WriteLine(e.Reason);
         };
 
+        // Event: Set flag up when connection with API ends due to silence
         recognizer.SessionStopped += (s, e) =>
         {
-            sessionEnded = true;
+            _sessionEnded = true;
         };
 
     }
 
+    public void PushAudio(byte[] buffer, int bytes)
+    {
+        pushStream.Write(buffer, bytes);
+        if (_sessionEnded && bytes > 0) StartAsync();
+    }
+
     public async Task StartAsync()
     {
-        sessionEnded = false;
+        _sessionEnded = false;
         await recognizer.StartContinuousRecognitionAsync();
     }
 
     public async Task StopAsync()
     {
-        sessionEnded = false;
+        _sessionEnded = false;
         await recognizer.StopContinuousRecognitionAsync();
     }
 

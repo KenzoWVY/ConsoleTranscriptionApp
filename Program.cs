@@ -84,7 +84,12 @@ public class Program
         }
 
         using SpeechTranscriber transcriber = new SpeechTranscriber(speechLang, settings.AzureKey, settings.AzureRegion);
-        using AudioRecorder recorder = new AudioRecorder(transcriber);
+        using AudioRecorder recorder = new AudioRecorder();
+
+        recorder.AudioOutput += (s, a) =>
+        {
+             transcriber.PushAudio(a.Buffer, a.BytesRecorded);
+        };
 
         AppState state = AppState.Paused;
 

@@ -8,8 +8,20 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove=".editorconfig" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.CognitiveServices.Speech" Version="1.46.0" />
     <PackageReference Include="NAudio" Version="2.2.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EditorConfigFiles Remove="C:\Users\Kenzo\Documents\workspace\dotnetprojs\TL_App\ConsoleTranscriptionApp\.editorconfig" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EditorConfigFiles Remove="C:\Users\Kenzo\Documents\workspace\dotnetprojs\TL_App\ConsoleTranscriptionApp\.editorconfig" />
   </ItemGroup>
 
 </Project>
