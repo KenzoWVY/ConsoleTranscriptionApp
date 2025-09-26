@@ -9,6 +9,8 @@ public class SpeechTranscriber : IDisposable
 
     private SpeechRecognizer recognizer;
 
+    private bool _manualStopFlag = false;
+
     public SpeechTranscriber(string language, string azureKey, string azureRegion)
     {
         pushStream = new PushAudioInputStream();
@@ -30,17 +32,28 @@ public class SpeechTranscriber : IDisposable
         {
             if (e.Result.Reason == ResultReason.RecognizedSpeech)
             {
-                Console.WriteLine($"\nRecognized: {e.Result.Text}");
+                Console.WriteLine($"\nRecognized: {e.Result.Text}\n");
             }
         };
 
         recognizer.Canceled += (s, e) =>
         {
-            Console.WriteLine($"\n--- AZURE SPEECH CONNECTION CANCELED ---");
+            if (e.Reason == CancellationReason.Error)
+            {
+                Console.WriteLine($"\n--- AZURE SPEECH CONNECTION CANCELED ---");
 
-            Console.WriteLine($"Error Code: {e.ErrorCode}");
-            Console.WriteLine($"Error Details: {e.ErrorDetails}");
-            Console.WriteLine("\n> Please check your Azure Speech Key and Region in the config.json file. Press [ENTER] to quit");
+                Console.WriteLine($"Error Code: {e.ErrorCode}");
+                Console.WriteLine($"Error Details: {e.ErrorDetails}");
+                Console.WriteLine("\n> Check Azure Speech Key and Region in the config.json file. Press [ENTER] to quit");
+            }
+        };
+
+        recognizer.SessionStopped += (s, e) =>
+        {
+            if (!_manualStopFlag)
+            {
+                recognizer.StartContinuousRecognitionAsync();
+            }
         };
 
     }
@@ -52,6 +65,7 @@ public class SpeechTranscriber : IDisposable
 
     public async Task StopAsync()
     {
+        _manualStopFlag = true;
         await recognizer.StopContinuousRecognitionAsync();
     }
 

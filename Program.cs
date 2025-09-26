@@ -120,7 +120,7 @@ public class Program
                         await transcriber.StopAsync();
                         recorder.Stop();
                     }
-                    Console.WriteLine("\n> Exiting application.\n");
+                    Console.WriteLine("\n> Exiting app . . .\n");
                     return 0;
                 }
             }
