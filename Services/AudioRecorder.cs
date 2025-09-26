@@ -5,18 +5,18 @@ namespace ConsoleTranscriptionApp.Services;
 
 public class AudioRecorder : IDisposable
 {
-    private readonly WaveFormat captureFormat = new WaveFormat(16000, 16, 1);
-
     private WasapiLoopbackCapture capture;
 
-    public AudioRecorder(PushAudioInputStream pushStream)
+    public AudioRecorder(SpeechTranscriber transcriber)
     {
+        var pushStream = transcriber.pushStream;
         capture = new WasapiLoopbackCapture();
-        capture.WaveFormat = captureFormat;
+        capture.WaveFormat = new WaveFormat(16000, 16, 1);
 
-        capture.DataAvailable += (s, a) =>
+        capture.DataAvailable += async (s, a) =>
         {
             pushStream.Write(a.Buffer, a.BytesRecorded);
+            if (transcriber.sessionEnded && a.BytesRecorded > 0) transcriber.StartAsync();
         };
     }
 

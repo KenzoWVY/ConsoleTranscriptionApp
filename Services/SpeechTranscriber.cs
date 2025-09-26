@@ -9,25 +9,29 @@ public class SpeechTranscriber : IDisposable
 
     private SpeechRecognizer recognizer;
 
-    private bool _manualStopFlag = false;
+    public bool sessionEnded = false;
 
     public SpeechTranscriber(string language, string azureKey, string azureRegion)
     {
         pushStream = new PushAudioInputStream();
 
         SpeechConfig speechConfigs = SpeechConfig.FromSubscription(azureKey, azureRegion);
-
         speechConfigs.SpeechRecognitionLanguage = language;
+        speechConfigs.SetProperty(PropertyId.Speech_SegmentationSilenceTimeoutMs, "10000");
         speechConfigs.EnableDictation();
+
 
         recognizer = new SpeechRecognizer(speechConfigs, AudioConfig.FromStreamInput(pushStream));
 
         // Events
+
+        // Event: Print real-time transcription
         recognizer.Recognizing += (s, e) =>
         {
             Console.WriteLine($"{e.Result.Text}");
         };
 
+        // Event: Print text after phrase is fully recognized
         recognizer.Recognized += (s, e) =>
         {
             if (e.Result.Reason == ResultReason.RecognizedSpeech)
@@ -36,6 +40,7 @@ public class SpeechTranscriber : IDisposable
             }
         };
 
+        // Event: Send error message in case connection with API fails
         recognizer.Canceled += (s, e) =>
         {
             if (e.Reason == CancellationReason.Error)
@@ -50,22 +55,20 @@ public class SpeechTranscriber : IDisposable
 
         recognizer.SessionStopped += (s, e) =>
         {
-            if (!_manualStopFlag)
-            {
-                recognizer.StartContinuousRecognitionAsync();
-            }
+            sessionEnded = true;
         };
 
     }
 
     public async Task StartAsync()
     {
+        sessionEnded = false;
         await recognizer.StartContinuousRecognitionAsync();
     }
 
     public async Task StopAsync()
     {
-        _manualStopFlag = true;
+        sessionEnded = false;
         await recognizer.StopContinuousRecognitionAsync();
     }
 

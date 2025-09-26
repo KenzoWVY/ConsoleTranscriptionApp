@@ -84,7 +84,7 @@ public class Program
         }
 
         using SpeechTranscriber transcriber = new SpeechTranscriber(speechLang, settings.AzureKey, settings.AzureRegion);
-        using AudioRecorder recorder = new AudioRecorder(transcriber.pushStream);
+        using AudioRecorder recorder = new AudioRecorder(transcriber);
 
         AppState state = AppState.Paused;
 
@@ -99,8 +99,8 @@ public class Program
                 {
                     state = AppState.Paused;
 
-                    await transcriber.StopAsync();
                     recorder.Stop();
+                    await transcriber.StopAsync();
 
                     Console.WriteLine("\n> Recording stopped. Press [SPACE] to resume . . .\n");
                 }
@@ -108,8 +108,8 @@ public class Program
                 {
                     state = AppState.Recording;
 
-                    await transcriber.StartAsync();
                     recorder.Start();
+                    await transcriber.StartAsync();
 
                     Console.WriteLine("\n> Recording started. Press [SPACE] to stop . . .\n");
                 }
@@ -117,8 +117,8 @@ public class Program
                 {
                     if (state == AppState.Recording)
                     {
-                        await transcriber.StopAsync();
                         recorder.Stop();
+                        await transcriber.StopAsync();
                     }
                     Console.WriteLine("\n> Exiting app . . .\n");
                     return 0;
