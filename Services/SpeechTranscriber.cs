@@ -12,6 +12,8 @@ public class SpeechTranscriber : IDisposable
 
     private bool _sessionEnded = false;
 
+    private Queue<string> lastPhrases = new Queue<string>();
+
     public SpeechTranscriber(string language, string azureKey, string azureRegion)
     {
         pushStream = new PushAudioInputStream();
@@ -28,7 +30,8 @@ public class SpeechTranscriber : IDisposable
         // Event: Print real-time transcription
         recognizer.Recognizing += (s, e) =>
         {
-            Console.WriteLine($"{e.Result.Text}");
+            Console.SetCursorPosition(1, 6);
+            Console.Write($"{e.Result.Text}");
         };
 
         // Event: Print phrase after fully recognized
@@ -36,7 +39,18 @@ public class SpeechTranscriber : IDisposable
         {
             if (e.Result.Reason == ResultReason.RecognizedSpeech)
             {
-                Console.WriteLine($"\nRecognized: {e.Result.Text}\n");
+                if (lastPhrases.Count > 5) lastPhrases.Dequeue();
+
+                lastPhrases.Enqueue(e.Result.Text);
+
+                Console.Clear();
+
+                Console.SetCursorPosition(1, 20);
+                Console.WriteLine($"[Recognized]:");
+                foreach (string phrase in lastPhrases)
+                {
+                    Console.WriteLine(phrase + "\n");
+                }
             }
         };
 
@@ -51,7 +65,6 @@ public class SpeechTranscriber : IDisposable
                 Console.WriteLine($"Error Details: {e.ErrorDetails}");
                 Console.WriteLine("\n> Check Azure Speech Key and Region in the config.json file. Press [ENTER] to quit");
             }
-            Console.WriteLine(e.Reason);
         };
 
         // Event: Set flag up when connection with API ends due to silence

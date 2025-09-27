@@ -93,6 +93,7 @@ public class Program
 
         AppState state = AppState.Paused;
 
+        Console.Clear();
         Console.WriteLine($"\n > {speechLang} selected. Press [SPACE] to begin and [ENTER] to quit app . . .\n");
         while (true)
         {
