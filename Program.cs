@@ -80,7 +80,12 @@ public class Program
                     break;
 
                 case '0':
+                    Console.WriteLine("\n > Exiting app . . .\n");
                     return 0;
+
+                default:
+                    Console.Clear();
+                    break;
             }
         }
 
@@ -109,7 +114,7 @@ public class Program
                     recorder.Stop();
                     await transcriber.StopAsync();
 
-                    Console.WriteLine("\n > Recording stopped. Press [SPACE] to resume . . .\n");
+                    Console.WriteLine("\n > Recording stopped. Press [SPACE] to resume and [ENTER] to quit app . . \n");
                 }
                 else if (state == AppState.Paused && pressedKey == ConsoleKey.Spacebar)
                 {
