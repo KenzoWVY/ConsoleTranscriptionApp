@@ -4,7 +4,7 @@ namespace ConsoleTranscriptionApp.Configuration;
 
 public class AppSettings
 {
-    public string AzureKey { get; set; }
-    public string AzureRegion { get; set; }
+    public required string AzureKey { get; set; }
+    public required string AzureRegion { get; set; }
 
 }

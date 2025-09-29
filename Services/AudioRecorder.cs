@@ -7,7 +7,7 @@ public class AudioRecorder : IDisposable
 {
     private WasapiLoopbackCapture _capture;
 
-    public event EventHandler<WaveInEventArgs> AudioOutput;
+    public event EventHandler<WaveInEventArgs>? AudioOutput;
 
     public AudioRecorder()
     {

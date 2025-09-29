@@ -16,12 +16,4 @@
     <PackageReference Include="NAudio" Version="2.2.1" />
   </ItemGroup>
 
-  <ItemGroup>
-    <EditorConfigFiles Remove="C:\Users\Kenzo\Documents\workspace\dotnetprojs\TL_App\ConsoleTranscriptionApp\.editorconfig" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <EditorConfigFiles Remove="C:\Users\Kenzo\Documents\workspace\dotnetprojs\TL_App\ConsoleTranscriptionApp\.editorconfig" />
-  </ItemGroup>
-
 </Project>

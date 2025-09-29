@@ -21,5 +21,16 @@ namespace ConsoleTranscriptionApp.Configuration
             string json = JsonSerializer.Serialize(settings, new JsonSerializerOptions { WriteIndented = true });
             File.WriteAllText(ConfigFile, json);
         }
+
+        public static AppSettings? Create(string? key, string? region)
+        {
+            if (String.IsNullOrEmpty(key) || String.IsNullOrEmpty(region)) return null;
+
+            return new AppSettings
+            {
+                AzureKey = key,
+                AzureRegion = region
+            };
+        }
     }
 }
