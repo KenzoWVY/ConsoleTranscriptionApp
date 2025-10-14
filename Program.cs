@@ -26,7 +26,7 @@ public class Program
         Console.WriteLine(" > Settings loaded from config.json");
 
         string? speechLang = string.Empty;
-        while (String.IsNullOrEmpty(speechLang) || settings == null)
+        while (String.IsNullOrEmpty(speechLang))
         {
             Console.WriteLine("\n\t----- AUDIO TRANSCRIBER -----\n");
 
@@ -62,19 +62,15 @@ public class Program
 
                     Console.WriteLine("\n Type new Azure Speech region: ");
                     string? region = Console.ReadLine();
-                    if (key == "0") break;
+                    if (region == "0") break;
 
                     settings = SettingsManager.Create(key, region);
 
                     if (settings != null)
                     {
                         SettingsManager.Save(settings);
+                        Thread.Sleep(1000);
                         Console.WriteLine("\n> Settings saved");
-                    }
-                    else
-                    {
-                        Console.WriteLine("\n> Key / region cannot be empty");
-                        settings = SettingsManager.Load();
                     }
 
                     break;
