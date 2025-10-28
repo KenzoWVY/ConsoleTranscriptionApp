@@ -77,8 +77,15 @@ public class SpeechTranscriber : IDisposable
 
     public void PushAudio(byte[] buffer, int bytes)
     {
-        pushStream.Write(buffer, bytes);
-        if (_sessionEnded && bytes > 0) StartAsync();
+        if (bytes > 0)
+        {
+            pushStream.Write(buffer, bytes);
+
+            if (_sessionEnded)
+            {
+                Task.Run(StartAsync);
+            }
+        }
     }
 
     public async Task StartAsync()
