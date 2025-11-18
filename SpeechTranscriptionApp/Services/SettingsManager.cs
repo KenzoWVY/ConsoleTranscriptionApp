@@ -1,15 +1,21 @@
-﻿using System;
-using System.Security.Cryptography;
+﻿using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
 
-namespace ConsoleTranscriptionApp.Configuration
+namespace SpeechTranscriptionApp.Services
 {
+    public class AppSettings
+    {
+        public required string AzureKey { get; set; }
+        public required string AzureRegion { get; set; }
+
+    }
+
     internal class SettingsManager
     {
         private const string ConfigFile = "config.json";
 
-        private static readonly byte[] salt = Encoding.UTF8.GetBytes("SALT_VALUE");
+        private static readonly byte[] Salt = Encoding.UTF8.GetBytes("SALT_VALUE");
 
         public static AppSettings? Load()
         {
@@ -54,9 +60,7 @@ namespace ConsoleTranscriptionApp.Configuration
         {
             if (String.IsNullOrEmpty(inputData)) return String.Empty;
 
-#pragma warning disable CA1416 // TODO: Add cross-platform support
-            byte[] encryptedData = ProtectedData.Protect(Encoding.UTF8.GetBytes(inputData), salt, DataProtectionScope.CurrentUser);
-#pragma warning restore CA1416 //
+            byte[] encryptedData = ProtectedData.Protect(Encoding.UTF8.GetBytes(inputData), Salt, DataProtectionScope.CurrentUser);
 
             return Convert.ToBase64String(encryptedData);
         }
@@ -66,9 +70,7 @@ namespace ConsoleTranscriptionApp.Configuration
 
             try
             {
-#pragma warning disable CA1416 // TODO: Add cross-platform support
-                byte[] data = ProtectedData.Unprotect(Convert.FromBase64String(encryptedData), salt, DataProtectionScope.CurrentUser);
-#pragma warning restore CA1416
+                byte[] data = ProtectedData.Unprotect(Convert.FromBase64String(encryptedData), Salt, DataProtectionScope.CurrentUser);
                 return Encoding.UTF8.GetString(data);
             }
             catch (CryptographicException)

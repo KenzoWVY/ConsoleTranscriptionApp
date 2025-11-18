@@ -1,0 +1,45 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="SpeechTranscriptionApp.Views.MainPage"
+             xmlns:viewmodel="clr-namespace:SpeechTranscriptionApp.ViewModels"
+             x:DataType="viewmodel:MainPageViewModel">
+
+    <Grid RowDefinitions="*, Auto, Auto"
+          ColumnDefinitions="10, *, 10">
+
+        <CollectionView ItemsSource="{Binding RecognizedPhrases}"
+                        x:Name="PhraseHistory"
+                        Grid.Row="0"
+                        Grid.Column="1"
+                        BackgroundColor="DimGray">
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Label Text="{Binding .}"
+                           FontSize="20"
+                           TextColor="White"/>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+        <Border Grid.Row="1"
+                Grid.Column="1">
+            <Label Text="{Binding CurrentPhrase}"
+                   BackgroundColor="DimGray"
+                   Padding="10"/>
+        </Border>
+
+        <Grid Grid.Row="2"
+              Grid.Column="0"
+              Grid.ColumnSpan="3"
+              Padding="15"
+              Margin="15">
+            <HorizontalStackLayout HorizontalOptions="Center"
+                                   Spacing="20">
+                <Button Text="{Binding StartStopButtonText}"
+                        Command="{Binding ToggleTranscriptionCommand}"
+                        WidthRequest="180"/>
+            </HorizontalStackLayout>
+        </Grid>
+    </Grid>
+</ContentPage>
