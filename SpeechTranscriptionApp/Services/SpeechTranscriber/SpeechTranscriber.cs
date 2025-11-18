@@ -8,13 +8,13 @@ namespace SpeechTranscriptionApp.Services.SpeechTranscriber
 
     public class SpeechTranscriber : ISpeechTranscriber
     {
-        private PushAudioInputStream _pushStream;
+        private readonly PushAudioInputStream _pushStream = new PushAudioInputStream();
 
-        private SpeechRecognizer _recognizer;
+        private readonly SpeechRecognizer _recognizer;
 
         private bool _sessionEnded = false;
 
-        private IAudioRecorder _audioRecorder;
+        private readonly IAudioRecorder _audioRecorder;
 
         public event EventHandler<string>? Recognizing;
 
@@ -22,8 +22,6 @@ namespace SpeechTranscriptionApp.Services.SpeechTranscriber
 
         public SpeechTranscriber(string language, string azureKey, string azureRegion, IAudioRecorder audioRecorder)
         {
-            _pushStream = new PushAudioInputStream();
-
             SpeechConfig speechConfigs = SpeechConfig.FromSubscription(azureKey, azureRegion);
             speechConfigs.SpeechRecognitionLanguage = language;
             speechConfigs.SetProfanity(ProfanityOption.Raw);

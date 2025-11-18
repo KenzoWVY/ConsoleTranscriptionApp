@@ -18,7 +18,7 @@ namespace SpeechTranscriptionApp.ViewModels
 
         private bool _isRecognizing = false;
 
-        [ObservableProperty] private ObservableCollection<string> recognizedPhrases;
+        [ObservableProperty] private ObservableCollection<string> recognizedPhrases = new ObservableCollection<string>();
 
         [ObservableProperty] private string _currentPhrase = "";
 
@@ -26,8 +26,6 @@ namespace SpeechTranscriptionApp.ViewModels
 
         public MainPageViewModel(ISpeechTranscriberFactory speechTranscriberFactory, IAudioRecorder audioRecorder)
         {
-            RecognizedPhrases = new ObservableCollection<string>();
-
             _speechTranscriberFactory = speechTranscriberFactory;
             _audioRecorder = audioRecorder;
 
@@ -48,11 +46,6 @@ namespace SpeechTranscriptionApp.ViewModels
                     CurrentPhrase = e;
                 });
             };
-        }
-
-        private void _speechTranscriber_Recognizing(object? sender, string e)
-        {
-            throw new NotImplementedException();
         }
 
         [RelayCommand]

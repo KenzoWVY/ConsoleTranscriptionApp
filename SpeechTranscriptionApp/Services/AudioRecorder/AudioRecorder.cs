@@ -4,13 +4,12 @@ namespace SpeechTranscriptionApp.Services.AudioRecorder
 {
     public class AudioRecorder : IAudioRecorder
     {
-        private WasapiLoopbackCapture _capture;
+        private WasapiLoopbackCapture _capture = new WasapiLoopbackCapture();
 
         public event EventHandler<WaveInEventArgs>? AudioOutput;
 
         public AudioRecorder()
         {
-            _capture = new WasapiLoopbackCapture();
             _capture.WaveFormat = new WaveFormat(16000, 16, 1);
 
             _capture.DataAvailable += (s, a) =>
