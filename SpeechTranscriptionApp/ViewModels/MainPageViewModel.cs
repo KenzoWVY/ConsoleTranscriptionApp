@@ -1,8 +1,10 @@
 ﻿using System.Collections.ObjectModel;
+using System.Diagnostics;
 using SpeechTranscriptionApp.Services.SpeechTranscriber;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using SpeechTranscriptionApp.Services.AudioRecorder;
+using SpeechTranscriptionApp.Views;
 
 namespace SpeechTranscriptionApp.ViewModels
 {
@@ -16,7 +18,7 @@ namespace SpeechTranscriptionApp.ViewModels
 
         private bool _isRecognizing = false;
 
-        [ObservableProperty] private ObservableCollection<string> _recognizedPhrases;
+        [ObservableProperty] private ObservableCollection<string> recognizedPhrases;
 
         [ObservableProperty] private string _currentPhrase = "";
 
@@ -29,7 +31,7 @@ namespace SpeechTranscriptionApp.ViewModels
             _speechTranscriberFactory = speechTranscriberFactory;
             _audioRecorder = audioRecorder;
 
-            _speechTranscriber = speechTranscriberFactory.Create("en-us", "XD", "XD", _audioRecorder);
+            _speechTranscriber = speechTranscriberFactory.Create("en-us", "no", "no", _audioRecorder);
 
             _speechTranscriber.PhraseRecognized += (s, e) =>
             {
@@ -67,7 +69,23 @@ namespace SpeechTranscriptionApp.ViewModels
                 await _speechTranscriber.StartAsync();
                 _isRecognizing = true;
                 StartStopButtonText = "Stop";
+
+                foreach (string phrase in RecognizedPhrases)
+                {
+                    Trace.WriteLine(phrase);
+                }
             }
+        }
+
+        [RelayCommand]
+        public async Task ChangeConfigs()
+        {
+            if (_isRecognizing)
+            { 
+                await _speechTranscriber.StopAsync();
+            }
+
+            // await Shell.Current.GoToAsync(nameof(ConfigsPage));
         }
     }
 }

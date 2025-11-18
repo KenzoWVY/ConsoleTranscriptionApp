@@ -26,7 +26,7 @@ namespace SpeechTranscriptionApp.Services.SpeechTranscriber
 
             SpeechConfig speechConfigs = SpeechConfig.FromSubscription(azureKey, azureRegion);
             speechConfigs.SpeechRecognitionLanguage = language;
-            speechConfigs.EnableDictation();
+            speechConfigs.SetProfanity(ProfanityOption.Raw);
 
 
             _recognizer = new SpeechRecognizer(speechConfigs, AudioConfig.FromStreamInput(_pushStream));
@@ -42,14 +42,12 @@ namespace SpeechTranscriptionApp.Services.SpeechTranscriber
             // Event: Send partial phrase to subscribers while recognizing
             _recognizer.Recognizing += (s, e) =>
             {
-                Trace.WriteLine("Recognizing: ");
                 Recognizing?.Invoke(this, e.Result.Text);
             };
 
             // Event: Send phrase to subscribers after fully recognized
             _recognizer.Recognized += (s, e) =>
             {
-                Trace.WriteLine("Recognized: " + e.Result.Text);
                 PhraseRecognized?.Invoke(this, e.Result.Text);
             };
 
@@ -72,7 +70,6 @@ namespace SpeechTranscriptionApp.Services.SpeechTranscriber
         {
             if (bytes > 0)
             {
-                Trace.WriteLine(bytes);
                 _pushStream.Write(buffer, bytes);
 
                 if (_sessionEnded)

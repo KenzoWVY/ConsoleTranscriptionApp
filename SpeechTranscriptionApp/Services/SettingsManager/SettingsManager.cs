@@ -2,16 +2,9 @@
 using System.Text;
 using System.Text.Json;
 
-namespace SpeechTranscriptionApp.Services
+namespace SpeechTranscriptionApp.Services.SettingsManager
 {
-    public class AppSettings
-    {
-        public required string AzureKey { get; set; }
-        public required string AzureRegion { get; set; }
-
-    }
-
-    internal class SettingsManager
+    public static class SettingsManagertingsManager
     {
         private const string ConfigFile = "config.json";
 
@@ -64,6 +57,7 @@ namespace SpeechTranscriptionApp.Services
 
             return Convert.ToBase64String(encryptedData);
         }
+
         public static string Decrypt(string encryptedData)
         {
             if (string.IsNullOrEmpty(encryptedData)) return String.Empty;

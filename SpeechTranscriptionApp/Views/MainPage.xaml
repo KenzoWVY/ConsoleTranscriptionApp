@@ -4,6 +4,20 @@
              x:Class="SpeechTranscriptionApp.Views.MainPage"
              xmlns:viewmodel="clr-namespace:SpeechTranscriptionApp.ViewModels"
              x:DataType="viewmodel:MainPageViewModel">
+    <ContentPage.Resources>
+        <Style x:Key="ReadOnlyEditorStyle" TargetType="Editor">
+            <Setter Property="IsReadOnly" Value="True"/>
+            <Setter Property="FontSize" Value="15"/>
+            <Setter Property="TextColor" Value="White"/>
+            <Setter Property="BackgroundColor" Value="Transparent"/>
+            <Setter Property="Margin" Value="-5"/>
+            <!-- Negative margin to allow the parent Border to handle padding -->
+            <Setter Property="AutoSize" Value="TextChanges"/>
+            <!-- Allows the editor to grow with content -->
+            <Setter Property="VerticalOptions" Value="FillAndExpand"/>
+            <Setter Property="HorizontalOptions" Value="FillAndExpand"/>
+        </Style>
+    </ContentPage.Resources>
 
     <Grid RowDefinitions="*, Auto, Auto"
           ColumnDefinitions="10, *, 10">
@@ -14,10 +28,11 @@
                         Grid.Column="1"
                         BackgroundColor="DimGray">
             <CollectionView.ItemTemplate>
-                <DataTemplate>
-                    <Label Text="{Binding .}"
-                           FontSize="20"
-                           TextColor="White"/>
+                <DataTemplate x:DataType="{x:Type x:String}">
+                    <Editor Text="{Binding .}"
+                           FontSize="15"
+                           TextColor="White"
+                           Style="{StaticResource ReadOnlyEditorStyle}" />
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>
@@ -39,6 +54,10 @@
                 <Button Text="{Binding StartStopButtonText}"
                         Command="{Binding ToggleTranscriptionCommand}"
                         WidthRequest="180"/>
+
+                <Button Text="Configs"
+                        Command="{Binding ChangeConfigsCommand}"
+                        WidthRequest="180" />
             </HorizontalStackLayout>
         </Grid>
     </Grid>

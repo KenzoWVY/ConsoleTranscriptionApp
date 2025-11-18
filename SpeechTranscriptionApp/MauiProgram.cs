@@ -1,6 +1,8 @@
 ﻿using Microsoft.Extensions.Logging;
 using SpeechTranscriptionApp.Services.AudioRecorder;
 using SpeechTranscriptionApp.Services.SpeechTranscriber;
+using SpeechTranscriptionApp.ViewModels;
+using SpeechTranscriptionApp.Views;
 
 namespace SpeechTranscriptionApp
 {
@@ -17,9 +19,14 @@ namespace SpeechTranscriptionApp
                     fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
                 });
 
+            builder.Services.AddSingleton<MainPage>();
+            builder.Services.AddSingleton<MainPageViewModel>();
+
+            builder.Services.AddTransient<ConfigsPage>();
+            builder.Services.AddTransient<ConfigsPageViewModel>();
+
             builder.Services.AddSingleton<IAudioRecorder, AudioRecorder>();
             builder.Services.AddSingleton<ISpeechTranscriberFactory, SpeechTranscriberFactory>();
-
 #if DEBUG
     		builder.Logging.AddDebug();
 #endif
